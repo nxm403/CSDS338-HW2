@@ -35,16 +35,16 @@ public class RequestGenerator {
                 break;
             case PATTERN_2:
 
-//                ArrayList<Integer> frequencyList = new ArrayList<>();
-//                for(int page : pageValues) {
-//                    int frequency = maxPageValue * Math.pow(1.5, -page);
-//                    for(int i = 1; i <= frequency; i++) {
-//                        frequencyList.add(page);
-//                    }
-//                }
+                ArrayList<Integer> frequencyList = new ArrayList<>();
+                for(int page : pageValues) {
+                    int frequency = maxPageValue * Math.pow(1.5, -page);
+                    for(int i = 1; i <= frequency; i++) {
+                        frequencyList.add(page);
+                    }
+                }
 
-                int rando = new Random().nextInt(maxPageValue);
-                requestVal = (int)(Math.pow(0.75, rando)*maxPageValue)+minPageValue;
+                requestVal = pagesValues[new Random().nextInt(frequencyList.length)];
+                break;
         }
 
         return requestVal;

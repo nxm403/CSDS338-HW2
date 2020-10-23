@@ -43,7 +43,7 @@ public class RequestGenerator {
                     }
                 }
 
-                requestVal = pagesValues[new Random().nextInt(frequencyList.length)];
+                requestVal = pagesValues[new Random().nextInt(frequencyList.size())];
                 break;
         }
 

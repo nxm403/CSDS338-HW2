@@ -3,7 +3,7 @@ import java.util.*;
 public class RequestGenerator {
     
     private final RequestPattern pattern;
-    private final Set<Integer> pageValues;
+    private final int[] pageValues;
 
     public enum RequestPattern {
         PATTERN_1, //equiprobable request for any of the n pages
@@ -17,13 +17,19 @@ public class RequestGenerator {
         
     }
 
-    private Set<Integer> pageValues(int[] pages) {
+    private int[] pageValues(int[] pages) {
         Set<Integer> tset = new TreeSet<Integer>();
         for(int page: pages) tset.add(page);
-
-        return tset;
+        return tset.toArray();
     }
-    // public int generateRequest() {
+    public int generateRequest() {
+        int requestVal = -1;
 
-    // }
+        switch(pattern) {
+            case PATTERN_1:
+                requestVal = new Random().nextInt(pageValues.length);
+        }
+
+        return requestVal;
+    }
 }

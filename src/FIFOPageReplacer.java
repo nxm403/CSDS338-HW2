@@ -1,45 +1,46 @@
 import java.util.*;
 
 class FIFOPageReplacer {
-    /**
-     * method to count number of page faults
-     * 
-     * prob needs to be altered
-     * @param pages
-     * @param n
-     * @param capacity
-     * @return
-     */
-    int pageFaults(int pages[], int n, int capacity) {
+    private Set<Integer> storedPages; //used for efficiently checking if a given page is already stored
+    private Queue<Integer> pageQueue; //stores pages in FIFO manner
+    private final int capacity;
+    private int numPageFaults;
 
-        Set<Integer> storedPages = new HashSet<>(capacity); //used for efficiently checking if a given page is already stored
-        Queue<Integer> pageQueue = new LinkedList<>(); //stores pages in FIFO manner
+    public FIFOPageReplacer(int capacity) {
+        this.capacity = capacity;
+        storedPages = new HashSet<>(capacity);
+        pageQueue = new LinkedList<>();
+        numPageFaults = 0;
+    }
 
-        int numPageFaults = 0;
-        for(int i = 0; i < n; i++) {
-            int currentPage = pages[i];
+    void addPage(int page) {
+        //storing pages that are not already stored
+        if(!storedPages.contains(page)) {
 
-            //storing pages that are not already stored
-            if(!storedPages.contains(currentPage)) {
+            //adding to stored pages if there is space
+            if(storedPages.size() < capacity) {
+                pageQueue.add(page);
+                storedPages.add(page);
+            } else { //performing FIFO if there is not any space
+                int topPage = pageQueue.peek();
 
-                //adding to stored pages if there is space
-                if(storedPages.size() < capacity) {
-                    pageQueue.add(currentPage);
-                    storedPages.add(currentPage);
-                } else { //performing FIFO if there is not any space
-                    int topPage = pageQueue.peek();
+                //removing oldest page and adding current page
+                storedPages.remove(topPage);
+                storedPages.add(page);
 
-                    //removing oldest page and adding current page
-                    storedPages.remove(topPage);
-                    storedPages.add(currentPage);
-
-                    pageQueue.add(currentPage);
-                }
-                numPageFaults++;
+                pageQueue.add(page);
             }
-            
+            numPageFaults++;
         }
+    }
 
+    void addPages(int pages[]) {
+        for(int page : pages) {
+            addPage(page);
+        }
+    }
+
+    public int getNumPageFaults() {
         return numPageFaults;
     }
 }

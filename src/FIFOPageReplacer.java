@@ -15,23 +15,23 @@ class FIFOPageReplacer {
 
     void addPage(int page) {
         //storing pages that are not already stored
-        if(!storedPages.contains(page)) {
+        if(-1 < page && !storedPages.contains(page)) {
 
-            //adding to stored pages if there is space
-            if(storedPages.size() < capacity) {
-                pageQueue.add(page);
-                storedPages.add(page);
-            } else { //performing FIFO if there is not any space
-                int topPage = pageQueue.peek();
-
-                //removing oldest page and adding current page
+            if(!(storedPages.size() < capacity)) {
+                //removing oldest page
+                int topPage = pageQueue.poll();
                 storedPages.remove(topPage);
-                storedPages.add(page);
-
-                pageQueue.add(page);
             }
+
+            //adding to stored pages
+            pageQueue.add(page);
+            storedPages.add(page);
             numPageFaults++;
         }
+    }
+
+    boolean request(int page) {
+        return storedPages.contains(page);
     }
 
     void addPages(int pages[]) {

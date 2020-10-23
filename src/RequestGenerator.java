@@ -3,7 +3,7 @@ import java.util.*;
 public class RequestGenerator {
     
     private final RequestPattern pattern;
-    private final int[] pageValues;
+    private final Integer[] pageValues;
     private final int minPageValue;
     private final int maxPageValue;
 
@@ -14,31 +14,52 @@ public class RequestGenerator {
     }
 
     public RequestGenerator(int[] pages, RequestPattern pattern) {
-        this.pattern = pattern;
         this.pageValues = pageValues(pages);
         this.minPageValue = pageValues[0];
         this.maxPageValue = pageValues[pageValues.length-1];
+
+        if(pageValues.length < 10 && pattern.compareTo(RequestPattern.PATTERN_3) == 0) {
+            this.pattern = RequestPattern.PATTERN_2;
+        } else {
+            this.pattern = pattern;
+        }
+        
+        
     }
 
-    private int[] pageValues(int[] pages) {
+    private Integer[] pageValues(int[] pages) {
         Set<Integer> tset = new TreeSet<Integer>();
         for(int page: pages) tset.add(page);
-        return tset.toArray();
+        return (Integer[]) tset.toArray();
     }
 
     public int generateRequest() {
         int requestVal = -1;
-
+        ArrayList<Integer> frequencyList = new ArrayList<>();
         switch(pattern) {
             case PATTERN_1:
                 requestVal = pagesValues[new Random().nextInt(pageValues.length)];
                 break;
             case PATTERN_2:
 
-                ArrayList<Integer> frequencyList = new ArrayList<>();
+                
                 for(int page : pageValues) {
                     int frequency = maxPageValue * Math.pow(1.5, -page);
                     for(int i = 1; i <= frequency; i++) {
+                        frequencyList.add(page);
+                    }
+                }
+
+                requestVal = pagesValues[new Random().nextInt(frequencyList.size())];
+                break;
+
+            case PATTERN_3:
+                for(int i = 0; i < pageValues.length; i++) {
+                    int frequency = maxPageValue * Math.pow(1.5, -page);
+
+                    if(3 <= i && i <= 10) frequency += maxPageValue;
+
+                    for(int j = 1; j <= frequency; j++) {
                         frequencyList.add(page);
                     }
                 }

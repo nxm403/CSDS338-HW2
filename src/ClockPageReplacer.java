@@ -4,6 +4,7 @@ public class ClockPageReplacer {
     private Set<Integer> storedPages; //used for efficiently checking if a given page is already stored
     private List<Integer> pageQueue; //used for FIFO operations
     private Map<Integer, Boolean> secondChance; //used to track if pages should have a second chance
+    private int numPageFaults;
     private final int capacity;
 
     public ClockPageReplacer(int capacity) {
@@ -18,6 +19,7 @@ public class ClockPageReplacer {
     void addPage(int page) {
         if(-1 < page) {
 
+        	
             //fixing if queue is at full capacity
             if(storedPages.size() == capacity) {//replacing a full queue
 
@@ -51,5 +53,8 @@ public class ClockPageReplacer {
         for(int page : pages) {
             addPage(page);
         }
+    }
+    public int getNumPageFaults() {
+        return numPageFaults;
     }
 }

@@ -3,7 +3,7 @@ import java.util.*;
 public class RequestGenerator {
     
     private final RequestPattern pattern;
-    private final Integer[] pageValues;
+    private final int[] pageValues;
     private final int minPageValue;
     private final int maxPageValue;
 
@@ -14,7 +14,7 @@ public class RequestGenerator {
     }
 
     public RequestGenerator(int[] pages, RequestPattern pattern) {
-        this.pageValues = pageValues(pages);
+        this.pageValues = pages;
         this.minPageValue = pageValues[0];
         this.maxPageValue = pageValues[pageValues.length-1];
 
@@ -25,12 +25,6 @@ public class RequestGenerator {
         }
         
         
-    }
-
-    private Integer[] pageValues(int[] pages) {
-        Set<Integer> tset = new TreeSet<Integer>();
-        for(int page: pages) tset.add(page);
-        return (Integer[]) tset.toArray();
     }
 
     public int generateRequest() {

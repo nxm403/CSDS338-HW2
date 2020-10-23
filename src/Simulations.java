@@ -30,14 +30,19 @@ public class Simulations {
 	}
 
 	private static void randomlyRequestPage(PageReplacer replacer1, PageReplacer replacer2, RequestGenerator requester) {
-		int chance = (new Random()).nextInt(10) + 1;
-		if ((new Random()).nextInt(chance) == 1) {
-			int requestedNumber = requester.generateRequest();
-			replacer1.request(requestedNumber);
-			replacer2.request(requestedNumber);
-		}
+        int chance = (new Random()).nextInt(10) + 1;
+        int chance2 = (new Random()).nextInt(chance);
+        int requestedNumber = requester.generateRequest();
+        if (chance2 == 1) {
+            replacer1.request(requestedNumber);
+            replacer2.request(requestedNumber);
+        } else if(chance2 == 2) {
+            replacer1.request(requestedNumber);
+        } else if(chance2 == 3) {
+            replacer2.request(requestedNumber);
+        }
+    }
 
-	}
 
 	private static void simulation(RequestGenerator.RequestPattern pattern) {
 		int[] FIFOpageFaults = new int[10];

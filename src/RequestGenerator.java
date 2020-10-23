@@ -4,6 +4,8 @@ public class RequestGenerator {
     
     private final RequestPattern pattern;
     private final int[] pageValues;
+    private final int minPageValue;
+    private final int maxPageValue;
 
     public enum RequestPattern {
         PATTERN_1, //equiprobable request for any of the n pages
@@ -14,7 +16,8 @@ public class RequestGenerator {
     public RequestGenerator(int[] pages, RequestPattern pattern) {
         this.pattern = pattern;
         this.pageValues = pageValues(pages);
-        
+        this.minPageValue = pageValues[0];
+        this.maxPageValue = pageValues[pageValues.length-1];
     }
 
     private int[] pageValues(int[] pages) {
@@ -22,12 +25,26 @@ public class RequestGenerator {
         for(int page: pages) tset.add(page);
         return tset.toArray();
     }
+
     public int generateRequest() {
         int requestVal = -1;
 
         switch(pattern) {
             case PATTERN_1:
-                requestVal = new Random().nextInt(pageValues.length);
+                requestVal = pagesValues[new Random().nextInt(pageValues.length)];
+                break;
+            case PATTERN_2:
+
+//                ArrayList<Integer> frequencyList = new ArrayList<>();
+//                for(int page : pageValues) {
+//                    int frequency = maxPageValue * Math.pow(1.5, -page);
+//                    for(int i = 1; i <= frequency; i++) {
+//                        frequencyList.add(page);
+//                    }
+//                }
+
+                int rando = new Random().nextInt(maxPageValue);
+                requestVal = (int)(Math.pow(0.75, rando)*maxPageValue)+minPageValue;
         }
 
         return requestVal;

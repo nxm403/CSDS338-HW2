@@ -38,33 +38,31 @@ public class RequestGenerator {
         ArrayList<Integer> frequencyList = new ArrayList<>();
         switch(pattern) {
             case PATTERN_1:
-                requestVal = pagesValues[new Random().nextInt(pageValues.length)];
+                requestVal = pageValues[new Random().nextInt(pageValues.length)];
                 break;
             case PATTERN_2:
-
-                
                 for(int page : pageValues) {
-                    int frequency = maxPageValue * Math.pow(1.5, -page);
+                    double frequency = maxPageValue * Math.pow(1.5, -page);
                     for(int i = 1; i <= frequency; i++) {
                         frequencyList.add(page);
                     }
                 }
 
-                requestVal = pagesValues[new Random().nextInt(frequencyList.size())];
+                requestVal = pageValues[new Random().nextInt(frequencyList.size())];
                 break;
 
             case PATTERN_3:
                 for(int i = 0; i < pageValues.length; i++) {
-                    int frequency = maxPageValue * Math.pow(1.5, -page);
+                    double frequency = maxPageValue * Math.pow(1.5, -pageValues[i]);
 
                     if(3 <= i && i <= 10) frequency += maxPageValue;
 
                     for(int j = 1; j <= frequency; j++) {
-                        frequencyList.add(page);
+                        frequencyList.add(pageValues[i]);
                     }
                 }
 
-                requestVal = pagesValues[new Random().nextInt(frequencyList.size())];
+                requestVal = pageValues[new Random().nextInt(frequencyList.size())];
                 break;
         }
 

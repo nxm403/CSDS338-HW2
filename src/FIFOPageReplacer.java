@@ -1,46 +1,60 @@
-import java.util.*;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
 
-class FIFOPageReplacer {
-    private Set<Integer> storedPages; //used for efficiently checking if a given page is already stored
-    private Queue<Integer> pageQueue; //stores pages in FIFO manner
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
+
+class FIFOPageReplacer implements PageReplacer {
+    private Set<Integer> storedPages;
+    private Queue<Integer> pageQueue;
     private final int capacity;
     private int numPageFaults;
 
     public FIFOPageReplacer(int capacity) {
         this.capacity = capacity;
-        storedPages = new HashSet<>(capacity);
-        pageQueue = new LinkedList<>();
-        numPageFaults = 0;
+        this.storedPages = new HashSet(capacity);
+        this.pageQueue = new LinkedList();
+        this.numPageFaults = 0;
     }
 
-    void addPage(int page) {
-        //storing pages that are not already stored
-        if(-1 < page && !storedPages.contains(page)) {
-
-            if(!(storedPages.size() < capacity)) {
-                //removing oldest page
-                int topPage = pageQueue.poll();
-                storedPages.remove(topPage);
+    public void addPage(int page) {
+        if (-1 < page && !this.storedPages.contains(page)) {
+            if (this.storedPages.size() >= this.capacity) {
+                int topPage = (Integer)this.pageQueue.poll();
+                this.storedPages.remove(topPage);
             }
 
-            //adding to stored pages
-            pageQueue.add(page);
-            storedPages.add(page);
-            numPageFaults++;
+            this.pageQueue.add(page);
+            this.storedPages.add(page);
+        }
+
+    }
+
+    public boolean request(int page) {
+        if (!this.storedPages.contains(page)) {
+            ++this.numPageFaults;
+            return false;
+        } else {
+            return true;
         }
     }
 
-    boolean request(int page) {
-        return storedPages.contains(page);
-    }
+    void addPages(int[] pages) {
+        int[] var2 = pages;
+        int var3 = pages.length;
 
-    void addPages(int pages[]) {
-        for(int page : pages) {
-            addPage(page);
+        for(int var4 = 0; var4 < var3; ++var4) {
+            int page = var2[var4];
+            this.addPage(page);
         }
+
     }
 
     public int getNumPageFaults() {
-        return numPageFaults;
+        return this.numPageFaults;
     }
 }

@@ -1,65 +1,77 @@
-import java.util.*;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class RequestGenerator {
-    
-    private final RequestPattern pattern;
+    private final RequestGenerator.RequestPattern pattern;
     private final int[] pageValues;
     private final int minPageValue;
     private final int maxPageValue;
+    private final ArrayList<Integer> frequencyList;
 
-    public enum RequestPattern {
-        PATTERN_1, //equiprobable request for any of the n pages
-        PATTERN_2, //strongly biased probability for lower-numbered pages to be requested, using an exponential distribution
-        PATTERN_3 //very strongly biased probability to request any of 3<k<10 pages, among the n, rest are exponentially distributed
-    }
-
-    public RequestGenerator(int[] pages, RequestPattern pattern) {
+    public RequestGenerator(int[] pages, RequestGenerator.RequestPattern pattern) {
         this.pageValues = pages;
-        this.minPageValue = pageValues[0];
-        this.maxPageValue = pageValues[pageValues.length-1];
-
-        if(pageValues.length < 10 && pattern.compareTo(RequestPattern.PATTERN_3) == 0) {
-            this.pattern = RequestPattern.PATTERN_2;
+        this.minPageValue = this.pageValues[0];
+        this.maxPageValue = this.pageValues[this.pageValues.length - 1];
+        if (this.pageValues.length < 10 && pattern.compareTo(RequestGenerator.RequestPattern.PATTERN_3) == 0) {
+            this.pattern = RequestGenerator.RequestPattern.PATTERN_2;
         } else {
             this.pattern = pattern;
         }
-        
-        
+
+        this.frequencyList = new ArrayList();
+        this.populateFrequencies();
     }
 
     public int generateRequest() {
-        int requestVal = -1;
-        ArrayList<Integer> frequencyList = new ArrayList<>();
-        switch(pattern) {
-            case PATTERN_1:
-                requestVal = pageValues[new Random().nextInt(pageValues.length)];
-                break;
-            case PATTERN_2:
-                for(int page : pageValues) {
-                    double frequency = maxPageValue * Math.pow(1.5, -page);
-                    for(int i = 1; i <= frequency; i++) {
-                        frequencyList.add(page);
-                    }
-                }
-
-                requestVal = pageValues[new Random().nextInt(frequencyList.size())];
-                break;
-
-            case PATTERN_3:
-                for(int i = 0; i < pageValues.length; i++) {
-                    double frequency = maxPageValue * Math.pow(1.5, -pageValues[i]);
-
-                    if(3 <= i && i <= 10) frequency += maxPageValue;
-
-                    for(int j = 1; j <= frequency; j++) {
-                        frequencyList.add(pageValues[i]);
-                    }
-                }
-
-                requestVal = pageValues[new Random().nextInt(frequencyList.size())];
-                break;
+        int requestVal;
+        if (this.pattern == RequestGenerator.RequestPattern.PATTERN_1) {
+            requestVal = this.pageValues[(new Random()).nextInt(this.pageValues.length)];
+        } else {
+            requestVal = (Integer)this.frequencyList.get((new Random()).nextInt(this.frequencyList.size()));
         }
 
         return requestVal;
+    }
+
+    private void populateFrequencies() {
+        int j;
+        if (this.pattern.equals(RequestGenerator.RequestPattern.PATTERN_2)) {
+            int[] var1 = this.pageValues;
+            int var2 = var1.length;
+
+            for(int var3 = 0; var3 < var2; ++var3) {
+                j = var1[var3];
+                double frequency = (double)this.maxPageValue * Math.pow(1.5D, (double)(-j));
+
+                for(int i = 1; (double)i <= frequency; ++i) {
+                    this.frequencyList.add(j);
+                }
+            }
+        }
+
+        if (this.pattern.equals(RequestGenerator.RequestPattern.PATTERN_3)) {
+            for(int i = 0; i < this.pageValues.length; ++i) {
+                double frequency = (double)this.maxPageValue * Math.pow(1.5D, (double)(-this.pageValues[i]));
+                if (2 <= i && i <= 9) {
+                    frequency += (double)this.maxPageValue;
+                }
+
+                for(j = 0; (double)j <= frequency; ++j) {
+                    this.frequencyList.add(this.pageValues[i]);
+                }
+            }
+        }
+
+    }
+
+    public enum RequestPattern {
+        PATTERN_1,
+        PATTERN_2,
+        PATTERN_3;
     }
 }

@@ -1,9 +1,20 @@
-import java.util.*;
+//
+// Source code recreated from a .class file by IntelliJ IDEA
+// (powered by Fernflower decompiler)
+//
 
-public class ClockPageReplacer {
-    private Set<Integer> storedPages; //used for efficiently checking if a given page is already stored
-    private List<Integer> pageQueue; //used for FIFO operations
-    private Map<Integer, Boolean> secondChance; //used to track if pages should have a second chance
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class ClockPageReplacer implements PageReplacer {
+    private Set<Integer> storedPages;
+    private List<Integer> pageQueue;
+    private Map<Integer, Boolean> secondChance;
     private int numPageFaults;
     private final int capacity;
 
@@ -11,50 +22,63 @@ public class ClockPageReplacer {
         assert capacity >= 1;
 
         this.capacity = capacity;
-        storedPages = new HashSet<>(capacity);
-        pageQueue = new LinkedList<>();
-        secondChance = new HashMap<>();
+        this.storedPages = new HashSet(capacity);
+        this.pageQueue = new LinkedList();
+        this.secondChance = new HashMap();
     }
 
-    void addPage(int page) {
-        if(-1 < page) {
+    public void addPage(int page) {
+        if (-1 < page) {
+            if (this.storedPages.size() == this.capacity) {
+                Iterator var2 = this.pageQueue.iterator();
 
-        	
-            //fixing if queue is at full capacity
-            if(storedPages.size() == capacity) {//replacing a full queue
-
-                //iterating through queue to find first page with a second chance bit of 0 (false)
-                LOOP:
-                for(int oldPage : pageQueue) {
-
-                    if(secondChance.get(oldPage)) { //lowering second chance bit of pages with a bit of 1 (true)
-                        secondChance.replace(oldPage, false);
-                    } else { //removing first with page with second chance bit of 0
-                        pageQueue.remove(oldPage);
-                        storedPages.remove(oldPage);
-                        secondChance.remove(oldPage);
-                        break LOOP;
-
+                while(var2.hasNext()) {
+                    int oldPage = (Integer)var2.next();
+                    if (!(Boolean)this.secondChance.get(oldPage)) {
+                        this.pageQueue.removeIf((n) -> {
+                            return n == oldPage;
+                        });
+                        this.storedPages.remove(oldPage);
+                        this.secondChance.remove(oldPage);
+                        break;
                     }
+
+                    this.secondChance.replace(oldPage, false);
                 }
             }
 
-            if(storedPages.contains(page)) { //setting second chance bit to 1 (true) if it already exists
-                secondChance.replace(page, true);
-            } else { //adding a page that is not in the queue
-                pageQueue.add(page);
-                storedPages.add(page);
-                secondChance.put(page, false);
+            if (this.storedPages.contains(page)) {
+                this.secondChance.replace(page, true);
+            } else {
+                this.pageQueue.add(page);
+                this.storedPages.add(page);
+                this.secondChance.put(page, false);
             }
+        }
+
+    }
+
+    public boolean request(int page) {
+        if (!this.storedPages.contains(page)) {
+            ++this.numPageFaults;
+            return false;
+        } else {
+            return true;
         }
     }
 
-    void addPages(int pages[]) {
-        for(int page : pages) {
-            addPage(page);
+    void addPages(int[] pages) {
+        int[] var2 = pages;
+        int var3 = pages.length;
+
+        for(int var4 = 0; var4 < var3; ++var4) {
+            int page = var2[var4];
+            this.addPage(page);
         }
+
     }
+
     public int getNumPageFaults() {
-        return numPageFaults;
+        return this.numPageFaults;
     }
 }
